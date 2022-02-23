@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ProductDeleteServlet extends HttpServlet {
+public class DeleteProductServlet extends HttpServlet {
 
   private final ProductService productService;
 

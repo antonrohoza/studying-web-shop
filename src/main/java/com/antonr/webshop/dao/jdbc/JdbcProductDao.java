@@ -11,7 +11,7 @@ import com.antonr.webshop.dao.ProductDao;
 import com.antonr.webshop.dao.jdbc.mapper.ProductRowMapper;
 import com.antonr.webshop.entity.Product;
 import com.antonr.webshop.exception.InconsistentDataException;
-import com.antonr.webshop.web.ProductUpdateServlet;
+import com.antonr.webshop.web.UpdateProductServlet;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import java.sql.Connection;
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 @AllArgsConstructor
 public class JdbcProductDao implements ProductDao {
 
-  private static final Logger LOG = Logger.getLogger(ProductUpdateServlet.class);
+  private static final Logger LOG = Logger.getLogger(UpdateProductServlet.class);
   private static final ProductRowMapper PRODUCT_ROW_MAPPER;
 
   private final ConnectionFactory connectionFactory;

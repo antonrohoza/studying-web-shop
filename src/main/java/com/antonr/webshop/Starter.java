@@ -6,9 +6,9 @@ import com.antonr.webshop.dao.ProductDao;
 import com.antonr.webshop.dao.jdbc.JdbcProductDao;
 import com.antonr.webshop.service.ProductService;
 import com.antonr.webshop.web.LoginServlet;
-import com.antonr.webshop.web.ProductAddServlet;
-import com.antonr.webshop.web.ProductDeleteServlet;
-import com.antonr.webshop.web.ProductUpdateServlet;
+import com.antonr.webshop.web.AddProductServlet;
+import com.antonr.webshop.web.DeleteProductServlet;
+import com.antonr.webshop.web.UpdateProductServlet;
 import com.antonr.webshop.web.AllProductsServlet;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +29,9 @@ public class Starter {
         ProductService productService = new ProductService(productDao);
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.addServlet(new ServletHolder(new AllProductsServlet(productService, tokens)), "/");
-        contextHandler.addServlet(new ServletHolder(new ProductAddServlet(productService)), "/add");
-        contextHandler.addServlet(new ServletHolder(new ProductUpdateServlet(productService)), "/update/*");
-        contextHandler.addServlet(new ServletHolder(new ProductDeleteServlet(productService)), "/delete");
+        contextHandler.addServlet(new ServletHolder(new AddProductServlet(productService)), "/add");
+        contextHandler.addServlet(new ServletHolder(new UpdateProductServlet(productService)), "/update/*");
+        contextHandler.addServlet(new ServletHolder(new DeleteProductServlet(productService)), "/delete");
         contextHandler.addServlet(new ServletHolder(new LoginServlet(tokens)), "/login");
 
         Server server = new Server(8080);

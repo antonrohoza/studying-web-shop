@@ -14,9 +14,9 @@ import lombok.AllArgsConstructor;
 import org.apache.log4j.Logger;
 
 @AllArgsConstructor
-public class ProductAddServlet extends HttpServlet {
+public class AddProductServlet extends HttpServlet {
 
-  private static final Logger LOG = Logger.getLogger(ProductUpdateServlet.class);
+  private static final Logger LOG = Logger.getLogger(UpdateProductServlet.class);
   private final ProductService productService;
 
   @Override
