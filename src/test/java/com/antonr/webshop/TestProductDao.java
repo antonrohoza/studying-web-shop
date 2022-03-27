@@ -10,6 +10,7 @@ import com.antonr.webshop.entity.Product;
 import com.antonr.webshop.service.ProductService;
 import io.vavr.collection.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +19,12 @@ public class TestProductDao {
   static final Product PRODUCT_1 = Product.builder().id(1)
       .name("A")
       .price(1)
-      .creationDate(LocalDate.MIN)
+      .creationDate(LocalDateTime.MAX)
       .build();
   static final Product PRODUCT_2 = Product.builder().id(2)
       .name("B")
       .price(2)
-      .creationDate(LocalDate.MAX)
+      .creationDate(LocalDateTime.MIN)
       .build();
   JdbcProductDao mockJDBCProductDao = mock(JdbcProductDao.class);
   ProductService productService = new ProductService(mockJDBCProductDao);

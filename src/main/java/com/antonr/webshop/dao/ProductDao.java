@@ -14,5 +14,5 @@ public interface ProductDao {
 
   boolean delete(int id);
 
-  int update(Product product);
+  boolean update(Product product);
 }

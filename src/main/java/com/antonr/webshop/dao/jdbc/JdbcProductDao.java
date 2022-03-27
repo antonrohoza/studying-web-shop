@@ -1,116 +1,90 @@
 package com.antonr.webshop.dao.jdbc;
 
-import static com.antonr.webshop.dao.jdbc.SQLQueries.DELETE_BY_ID;
-import static com.antonr.webshop.dao.jdbc.SQLQueries.INSERT_QUERY;
-import static com.antonr.webshop.dao.jdbc.SQLQueries.SELECT_ALL;
-import static com.antonr.webshop.dao.jdbc.SQLQueries.SELECT_BY_ID;
-import static com.antonr.webshop.dao.jdbc.SQLQueries.UPDATE_QUERY;
-
 import com.antonr.webshop.config.ConnectionFactory;
 import com.antonr.webshop.dao.ProductDao;
 import com.antonr.webshop.dao.jdbc.mapper.ProductRowMapper;
 import com.antonr.webshop.entity.Product;
-import com.antonr.webshop.exception.InconsistentDataException;
-import com.antonr.webshop.web.UpdateProductServlet;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
-import org.apache.log4j.Logger;
+import lombok.SneakyThrows;
 
 @AllArgsConstructor
 public class JdbcProductDao implements ProductDao {
 
-  private static final Logger LOG = Logger.getLogger(UpdateProductServlet.class);
-  private static final ProductRowMapper PRODUCT_ROW_MAPPER;
+  private static final String SELECT_ALL = "SELECT id, name, price, creation_date FROM products;";
+  private static final String SELECT_BY_ID = "SELECT id, name, price, creation_date FROM products WHERE id=?;";
+  private static final String INSERT_QUERY = "INSERT INTO products (id, name, price, creation_date) VALUES (?, ?, ?, ?);";
+  private static final String DELETE_BY_ID = "DELETE FROM products WHERE id=?;";
+  private static final String UPDATE_QUERY = "UPDATE products SET name=?, price=?, creation_date=? WHERE id=?;";
 
+  private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
   private final ConnectionFactory connectionFactory;
 
-  static {
-    PRODUCT_ROW_MAPPER = new ProductRowMapper();
-  }
-
   @Override
+  @SneakyThrows
   public Seq<Product> findAll() {
     try (Connection connection = connectionFactory.getConnection();
-        PreparedStatement statement = connection.prepareStatement(SELECT_ALL)) {
+         PreparedStatement statement = connection.prepareStatement(SELECT_ALL)) {
       try (ResultSet resultSet = statement.executeQuery()) {
-        return getAllProducts(resultSet, List.empty());
+        return PRODUCT_ROW_MAPPER.getAllElements(resultSet, List.empty());
       }
-    } catch (SQLException e) {
-      LOG.error("Can't get all products!", e);
-      throw new InconsistentDataException(e);
     }
   }
 
   @Override
+  @SneakyThrows
   public Optional<Product> findById(int id) {
     try (Connection connection = connectionFactory.getConnection();
-        PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
+         PreparedStatement statement = connection.prepareStatement(SELECT_BY_ID)) {
       statement.setInt(1, id);
       try (ResultSet resultSet = statement.executeQuery()) {
         return resultSet.next() ? Optional.of(PRODUCT_ROW_MAPPER.mapRow(resultSet))
-            : Optional.empty();
+                                : Optional.empty();
       }
-    } catch (SQLException e) {
-      LOG.error("Can't id: " + id + " of product!", e);
-      throw new InconsistentDataException(e);
     }
   }
 
   @Override
+  @SneakyThrows
   public boolean save(Product product) {
     try (Connection connection = connectionFactory.getConnection();
-        PreparedStatement statement = connection.prepareStatement(INSERT_QUERY)) {
+         PreparedStatement statement = connection.prepareStatement(INSERT_QUERY)) {
       statement.setInt(1, product.getId());
       statement.setString(2, product.getName());
       statement.setDouble(3, product.getPrice());
-      statement.setDate(4, Date.valueOf(product.getCreationDate()));
+      statement.setDate(4, Date.valueOf(product.getCreationDate().toLocalDate()));
       return statement.execute();
-    } catch (SQLException e) {
-      LOG.error("Error during INSERT!", e);
-      throw new InconsistentDataException(e);
     }
   }
 
   @Override
-  public int update(Product product) {
+  @SneakyThrows
+  public boolean update(Product product) {
     try (Connection connection = connectionFactory.getConnection();
-        PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
+         PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
       statement.setString(1, product.getName());
       statement.setDouble(2, product.getPrice());
-      statement.setDate(3, Date.valueOf(product.getCreationDate()));
+      statement.setDate(3, Date.valueOf(product.getCreationDate().toLocalDate()));
       statement.setInt(4, product.getId());
-      return statement.executeUpdate();
-    } catch (
-        SQLException e) {
-      LOG.error("Error during UPDATE!", e);
-      throw new InconsistentDataException(e);
+      statement.execute();
+      return statement.getUpdateCount() == 1;
     }
   }
 
   @Override
+  @SneakyThrows
   public boolean delete(int id) {
     try (Connection connection = connectionFactory.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID)) {
+         PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID)) {
       statement.setInt(1, id);
-      return statement.execute();
-    } catch (SQLException e) {
-      LOG.error("ERROR during DELETE by id: " + id + "!", e);
-      throw new InconsistentDataException(e);
+      statement.execute();
+      return statement.getUpdateCount() == 1;
     }
-  }
-
-  private static Seq<Product> getAllProducts(ResultSet resultSet, Seq<Product> productsList)
-      throws SQLException {
-    if (!resultSet.next()) {
-      return productsList;
-    }
-    return getAllProducts(resultSet, productsList.append(PRODUCT_ROW_MAPPER.mapRow(resultSet)));
   }
 }

@@ -7,19 +7,20 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public final class PageGenerator {
+public class PageGenerator {
 
-  private static final Logger LOG = Logger.getLogger(PageGenerator.class);
-  private static final String RESOURCES_PATH = PageGenerator.class.getResource(File.separator).getPath();
-  private static final Configuration CONFIGURATION = new Configuration(Configuration.VERSION_2_3_31);
+  private static final Logger LOG = LoggerFactory.getLogger(PageGenerator.class);
+  private static final String RESOURCES_PATH = PageGenerator.class.getResource("/template")
+                                                                  .getPath();
+  private static final Configuration CONFIGURATION = new Configuration(
+      Configuration.VERSION_2_3_31);
 
-  private PageGenerator() {
-  }
-
-  static {
+  public PageGenerator() {
     try {
       CONFIGURATION.setTemplateLoader(new FileTemplateLoader(new File(RESOURCES_PATH)));
     } catch (IOException e) {
@@ -28,7 +29,7 @@ public final class PageGenerator {
     }
   }
 
-  public static void generatePage(PrintWriter writer, String filename, Map<String, ?> data) {
+  public void generatePage(PrintWriter writer, String filename, Map<String, ?> data) {
     try {
       Template template = CONFIGURATION.getTemplate(filename);
       template.process(data, writer);
@@ -36,5 +37,9 @@ public final class PageGenerator {
       LOG.error("Failed to generate Page", e);
       throw new RuntimeException(e);
     }
+  }
+
+  public void generatePage(PrintWriter printWriter, String filename) {
+    generatePage(printWriter, filename, Collections.emptyMap());
   }
 }

@@ -2,22 +2,24 @@ package com.antonr.webshop.dao.jdbc.mapper;
 
 import com.antonr.webshop.entity.Product;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.SneakyThrows;
 
-public class ProductRowMapper {
+public class ProductRowMapper extends RowMapper<Product> {
 
-  public Product mapRow(ResultSet resultSet) throws SQLException {
+  @Override
+  @SneakyThrows
+  public Product mapRow(ResultSet resultSet) {
     int id = resultSet.getInt("id");
     String name = resultSet.getString("name");
     double price = resultSet.getDouble("price");
-    LocalDate creationDate = resultSet.getDate("creation_date").toLocalDate();
+    LocalDateTime creationDate = resultSet.getTimestamp("creation_date").toLocalDateTime();
 
     return Product.builder()
-        .id(id)
-        .name(name)
-        .price(price)
-        .creationDate(creationDate)
-        .build();
+                  .id(id)
+                  .name(name)
+                  .price(price)
+                  .creationDate(creationDate)
+                  .build();
   }
 }

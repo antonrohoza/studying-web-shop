@@ -9,26 +9,27 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ProductService {
-    private final ProductDao productDao;
 
-    public Seq<Product> getAll() {
-        return productDao.findAll();
-    }
+  private final ProductDao productDao;
 
-    public Product getById(int id) {
-        Optional<Product> maybeId = productDao.findById(id);
-        return maybeId.orElseThrow(() -> new ProductNotFoundException("There is no such product in DB!"));
-    }
+  public Seq<Product> getAll() {
+    return productDao.findAll();
+  }
 
-    public boolean save(Product product) {
-        return productDao.save(product);
-    }
+  public Product getById(int id) {
+    Optional<Product> maybeId = productDao.findById(id);
+    return maybeId.orElseThrow(() -> new ProductNotFoundException("There is no such product in DB!"));
+  }
 
-    public boolean delete(int id) {
-        return productDao.delete(id);
-    }
+  public boolean save(Product product) {
+    return productDao.save(product);
+  }
 
-    public int update(Product product) {
-        return productDao.update(product);
-    }
+  public boolean delete(int id) {
+    return productDao.delete(id);
+  }
+
+  public boolean update(Product product) {
+    return productDao.update(product);
+  }
 }
