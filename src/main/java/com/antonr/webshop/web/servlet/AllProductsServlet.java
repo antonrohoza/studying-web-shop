@@ -1,5 +1,6 @@
 package com.antonr.webshop.web.servlet;
 
+import com.antonr.webshop.ServiceLocator;
 import com.antonr.webshop.service.ProductService;
 import com.antonr.webshop.web.util.PageGenerator;
 import io.vavr.collection.HashMap;
@@ -12,8 +13,8 @@ import lombok.SneakyThrows;
 @AllArgsConstructor
 public class AllProductsServlet extends HttpServlet {
 
-  private final ProductService productService;
-  private final PageGenerator pageGenerator;
+  private final ProductService productService = ServiceLocator.get(ProductService.class);
+  private final PageGenerator pageGenerator = ServiceLocator.get(PageGenerator.class);
 
   @Override
   @SneakyThrows
