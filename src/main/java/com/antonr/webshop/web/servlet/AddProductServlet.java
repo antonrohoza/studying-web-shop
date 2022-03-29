@@ -1,5 +1,6 @@
 package com.antonr.webshop.web.servlet;
 
+import com.antonr.webshop.ServiceLocator;
 import com.antonr.webshop.entity.Product;
 import com.antonr.webshop.service.ProductService;
 import com.antonr.webshop.web.util.PageGenerator;
@@ -7,14 +8,12 @@ import com.antonr.webshop.web.util.WebUtils;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
-@AllArgsConstructor
 public class AddProductServlet extends HttpServlet {
 
-  private final ProductService productService;
-  private final PageGenerator pageGenerator;
+  private final ProductService productService = ServiceLocator.get(ProductService.class);
+  private final PageGenerator pageGenerator = ServiceLocator.get(PageGenerator.class);
 
   @Override
   @SneakyThrows

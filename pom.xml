@@ -11,8 +11,8 @@
 
   <properties>
     <encoding>UTF-8</encoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <lombok.version>1.18.22</lombok.version>
     <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     <freemarker.version>2.3.31</freemarker.version>
@@ -46,13 +46,13 @@
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.13.v20161014</version>
+        <version>10.0.8</version>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
-      <dependency>
+    <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${apache.version}</version>
